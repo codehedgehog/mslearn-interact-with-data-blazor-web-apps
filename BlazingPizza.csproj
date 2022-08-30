@@ -5,4 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="CODE_OF_CONDUCT.md" />
+    <None Remove="LICENSE" />
+    <None Remove="LICENSE-CODE" />
+    <None Remove="README.md" />
+    <None Remove="SECURITY.md" />
+  </ItemGroup>
+
 </Project>
