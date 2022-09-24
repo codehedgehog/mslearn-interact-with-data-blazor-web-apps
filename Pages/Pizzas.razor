@@ -1,23 +1,52 @@
 ﻿@page "/pizzas"
 
-
 @using BlazingPizza.Data
 @inject PizzaService PizzaSvc
 
+<div class="main">
+	<h1>Choose your pizza</h1>
+	<p>
+		<div>Microsoft Learning module in this exercise:</div>
+		<div><b><a target="_blank" href="https://docs.microsoft.com/en-us/learn/modules/interact-with-data-blazor-web-apps/"></a>Interact with data in Blazor web apps</b></div>
+		<ul>
+			<li><a target="_blank" href="https://docs.microsoft.com/en-us/learn/modules/interact-with-data-blazor-web-apps/4-access-data-from-blazor-components">Access data from a Blazor component</a></li>
+		</ul>
+	</p>
 
-<h1>Choose your pizza</h1>
-
-<p>We have all these delicious recipes:</p>
+	<p>We have all these delicious recipes:</p>
 
 
-@if (todaysPizzas == null)
-{
-	<p>We're finding out what pizzas are available today...</p>
-}
-else
-{
-	<!-- This markup will be rendered once the pizzas are loaded -->
-}
+	@if (todaysPizzas == null)
+	{
+		<p>We're finding out what pizzas are available today...</p>
+	}
+	else
+	{
+		<table>
+			<thead>
+				<tr>
+					<th>Pizza Name</th>
+					<th>Description</th>
+					<th>Vegetarian?</th>
+					<th>Vegan?</th>
+					<th>Price</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var pizza in todaysPizzas)
+				{
+					<tr>
+						<td>@pizza.Name</td>
+						<td>@pizza.Description</td>
+						<td>@pizza.Vegetarian</td>
+						<td>@pizza.Vegan</td>
+						<td>@pizza.Price</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+</div>
 
 @code {
 	private Pizza[] todaysPizzas;
@@ -27,11 +56,3 @@ else
 	}
 }
 
-
-<p>
-	<div>Microsoft Learning module in this exercise:</div>
-	<div><b><a target="_blank" href="https://docs.microsoft.com/en-us/learn/modules/interact-with-data-blazor-web-apps/"></a>Interact with data in Blazor web apps</b></div>
-	<ul>
-		<li><a target="_blank" href="https://docs.microsoft.com/en-us/learn/modules/interact-with-data-blazor-web-apps/4-access-data-from-blazor-components">Access data from a Blazor component</a></li>
-	</ul>
-</p>
