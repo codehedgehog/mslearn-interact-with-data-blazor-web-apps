@@ -49,8 +49,8 @@
 </div>
 
 @code {
-	private Pizza[] todaysPizzas;
-	protected override async Task OnInitializedAsync()
+		private Data.Pizza[] todaysPizzas;
+		protected override async Task OnInitializedAsync()
 	{
 		todaysPizzas = await PizzaSvc.GetPizzasAsync();
 	}

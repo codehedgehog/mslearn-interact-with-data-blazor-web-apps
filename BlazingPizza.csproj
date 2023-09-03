@@ -9,6 +9,9 @@
     <None Remove="CODE_OF_CONDUCT.md" />
     <None Remove="LICENSE" />
     <None Remove="LICENSE-CODE" />
+    <None Remove="pizza.db" />
+    <None Remove="pizza.db-shm" />
+    <None Remove="pizza.db-wal" />
     <None Remove="README.md" />
     <None Remove="SECURITY.md" />
   </ItemGroup>

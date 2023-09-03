@@ -1,5 +1,4 @@
-﻿@using BlazingPizza.Model
-@inject HttpClient HttpClient
+﻿@@inject HttpClient HttpClient
 
 <div class="dialog-container">
 	<div class="dialog">
@@ -29,7 +28,7 @@
 
 
 @code {
-	[Parameter] public Model.Pizza Pizza { get; set; }
+	[Parameter] public Pizza Pizza { get; set; }
 	[Parameter] public EventCallback OnCancel { get; set; }
 	[Parameter] public EventCallback OnConfirm { get; set; }
 }

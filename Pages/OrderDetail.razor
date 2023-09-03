@@ -1,0 +1,81 @@
+﻿@page "/myorders/{orderId:int}"
+
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+<div class="main">
+  <p>Microsoft Learning module in this exercise:</p>
+  <p>
+    <div><b>Use pages, routing, and layouts to improve Blazor navigation</b></div>
+    <ul>
+      <li><a target="_blank" href="https://learn.microsoft.com/en-us/training/modules/use-pages-routing-layouts-control-blazor-navigation/5-exercise-route-parameters-improve-apps-navigation">Exercise - Use route parameters to improve your apps navigation</a></li>
+    </ul>
+  </p>
+
+  @if (invalidOrder)
+  {
+    <h2>Order not found</h2>
+    <p>We're sorry but this order no longer exists.</p>
+  }
+  else if (orderWithStatus == null)
+  {
+    <div class="track-order">
+      <div class="track-order-title">
+        <h2>
+          <text>Loading...</text>
+        </h2>
+        <p class="ml-auto mb-0">
+          ...
+        </p>
+      </div>
+    </div>
+  }
+  else
+  {
+    <div class="track-order">
+      <div class="track-order-title">
+        <h2>
+          Order placed @orderWithStatus.Order.CreatedTime.ToLongDateString()
+        </h2>
+        <p class="ml-auto mb-0">
+          Status: <strong>@orderWithStatus.StatusText</strong>
+        </p>
+      </div>
+      <div class="track-order-body">
+        <div class="track-order-details">
+          @foreach (var pizza in orderWithStatus.Order.Pizzas)
+          {
+            <p>
+              <strong>
+                @(pizza.Size)"
+                @pizza.Special.Name
+                (£@pizza.GetFormattedTotalPrice())
+              </strong>
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+@code {
+  [Parameter] public int OrderId { get; set; }
+
+  OrderWithStatus orderWithStatus;
+  bool invalidOrder = false;
+
+  protected override async Task OnParametersSetAsync()
+  {
+    try
+    {
+      orderWithStatus = await HttpClient.GetFromJsonAsync<OrderWithStatus>(
+          $"{NavigationManager.BaseUri}orders/{OrderId}");
+    }
+    catch (Exception ex)
+    {
+      invalidOrder = true;
+      Console.Error.WriteLine(ex);
+    }
+  }
+}
