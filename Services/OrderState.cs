@@ -31,5 +31,4 @@ public class OrderState
 	{
 		Order.Pizzas.Remove(pizza);
 	}
-
 }
