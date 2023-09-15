@@ -1,6 +1,3 @@
-using BlazingPizza.Data;
-using BlazingPizza.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();

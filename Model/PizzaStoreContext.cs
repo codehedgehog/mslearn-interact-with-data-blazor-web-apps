@@ -4,7 +4,7 @@ public class PizzaStoreContext : DbContext
 {
 	public DbSet<Order> Orders { get; set; }
 
-	public DbSet<Pizza> Pizzas { get; set; }
+	public DbSet<Model.Pizza> Pizzas { get; set; }
 
 	public DbSet<PizzaSpecial> Specials { get; set; }
 
@@ -20,7 +20,7 @@ public class PizzaStoreContext : DbContext
 
 		// Configuring a many-to-many special -> topping relationship that is friendly for serialization
 		modelBuilder.Entity<PizzaTopping>().HasKey(pst => new { pst.PizzaId, pst.ToppingId });
-		modelBuilder.Entity<PizzaTopping>().HasOne<Pizza>().WithMany(ps => ps.Toppings);
+		modelBuilder.Entity<PizzaTopping>().HasOne<Model.Pizza>().WithMany(ps => ps.Toppings);
 		modelBuilder.Entity<PizzaTopping>().HasOne(pst => pst.Topping).WithMany();
 	}
 }

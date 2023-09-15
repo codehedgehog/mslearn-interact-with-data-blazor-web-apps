@@ -9,7 +9,7 @@
 		<form class="dialog-body">
 			<div>
 				<label>Size:</label>
-				<input type="range" min="@Pizza.MinimumSize" max="@Pizza.MaximumSize" step="1" @bind="Pizza.Size" @bind:event="oninput" />
+				<input type="range" min=Pizza.MinimumSize max=Pizza.MaximumSize step="1" @bind=Pizza.Size @bind:event="oninput" />
 				<span class="size-label">
 					@(Pizza.Size)" (£@(Pizza.GetFormattedTotalPrice()))
 				</span>
@@ -28,7 +28,7 @@
 
 
 @code {
-	[Parameter] public Pizza Pizza { get; set; }
+	[Parameter] public Model.Pizza Pizza { get; set; }
 	[Parameter] public EventCallback OnCancel { get; set; }
 	[Parameter] public EventCallback OnConfirm { get; set; }
 }

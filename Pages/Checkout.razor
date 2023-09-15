@@ -1,49 +1,95 @@
 ﻿@page "/checkout"
 
-@using BlazingPizza.Services;
-
 @inject OrderState OrderState
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 
-<div class="main">
-	<div class="checkout-cols">
-		<div class="checkout-order-details">
-			<h4>Review order</h4>
-			@foreach (var pizza in Order.Pizzas)
-			{
-				<p>
-					<strong>
-						@(pizza.Size)"
-						@pizza.Special.Name
-						(£@pizza.GetFormattedTotalPrice())
-					</strong>
-				</p>
-			}
-			<p>
-				<strong>
-					Total price:
-					£@Order.GetFormattedTotalPrice()
-				</strong>
-			</p>
-		</div>
-	</div>
+@implements IDisposable
 
-	<button class="checkout-button btn btn-warning" @onclick="PlaceOrder" disabled=@isSubmitting>
-		Place order
-	</button>
+<div class="main">
+
+	<p>Microsoft Learning module in this exercise:</p>
+	<p>
+		<div><b><a target="_blank" href="https://learn.microsoft.com/en-us/training/modules/blazor-improve-how-forms-work/">Improve how forms and validation work in Blazor web apps</a></b></div>
+		<ul>
+			<li><a target="_blank" href="https://learn.microsoft.com/en-us/training/modules/blazor-improve-how-forms-work/3-exercise-create-blazor-event-handler-onclick-events">Exercise - Create a Blazor event handler for onclick events</a></li>
+			<li><a target="_blank" href="https://learn.microsoft.com/en-us/training/modules/blazor-improve-how-forms-work/5-exercise-create-address-form-blazor-components">Exercise - Create an address form with Blazor components</a></li>
+			<li><a target="_blank" href="https://learn.microsoft.com/en-us/training/modules/blazor-improve-how-forms-work/7-exercise-add-server-client-side-data-validation-address-form">Exercise - Add server-side and client-side data validation to the address form</a></li>
+		</ul>
+	</p>
+
+	<EditForm EditContext=editContext OnValidSubmit=PlaceOrder OnInvalidSubmit=ShowError>
+		<div class="checkout-cols">
+			<div class="checkout-order-details">
+				<h4>Review order</h4>
+				<OrderReview Order="Order" />
+			</div>
+			<div class="checkout-delivery-address">
+				<h4>Deliver to...</h4>
+				@if (isError)
+				{
+					<div class="alert alert-danger">Please enter a name and address.</div>
+				}
+				<AddressEditor Address="Order.DeliveryAddress" />
+			</div>
+		</div>
+		<button class="checkout-button btn btn-warning" type="submit" disabled=@isError>
+			Place order
+		</button>
+		<DataAnnotationsValidator />
+	</EditForm>
 </div>
 
 @code {
+	private EditContext editContext;
+
 	Order Order => OrderState.Order;
 	bool isSubmitting;
+	bool isError = true;
+
+	protected override void OnInitialized()
+	{
+		editContext = new(Order.DeliveryAddress);
+		editContext.OnFieldChanged += HandleFieldChanged;
+	}
+
+	private void HandleFieldChanged(object sender, FieldChangedEventArgs e)
+	{
+		isError = !editContext.Validate();
+		StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		editContext.OnFieldChanged -= HandleFieldChanged;
+	}
 
 	async Task PlaceOrder()
 	{
-		isSubmitting = true;
-		var response = await HttpClient.PostAsJsonAsync(NavigationManager.BaseUri + "orders", OrderState.Order);
+		//isError = false;
+		//isSubmitting = true;
+		var response = await HttpClient.PostAsJsonAsync($"{NavigationManager.BaseUri}orders", OrderState.Order);
 		var newOrderId = await response.Content.ReadFromJsonAsync<int>();
 		OrderState.ResetOrder();
 		NavigationManager.NavigateTo($"myorders/{newOrderId}");
+	}
+
+	protected void ShowError()
+	{
+		isError = true;
+	}
+
+	private async Task CheckSubmission(EditContext editContext)
+	{
+		isSubmitting = true;
+		var model = editContext.Model as Address;
+		isError = string.IsNullOrWhiteSpace(model?.Name)
+				|| string.IsNullOrWhiteSpace(model?.Line1)
+				|| string.IsNullOrWhiteSpace(model?.PostalCode);
+		if (!isError)
+		{
+			await PlaceOrder();
+		}
+		isSubmitting = false;
 	}
 }
